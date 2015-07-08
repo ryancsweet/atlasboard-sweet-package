@@ -1,0 +1,25 @@
+{
+  "layout": {
+      "title": "sonar-treemap sample",
+      "customJS" : [],
+      "widgets" : [
+          {"row" : 1, "col" : 1, "width" : 6, "height" : 2, "widget" : "sonarqube-treemap", "job" : "sonarqube-treemap", "config": "sonarqube-treemap"}
+      ]
+  },
+
+  "config" : {
+     "sonarqube-treemap" : {
+	"credentials": "sonarqube",
+        "interval" : 60000,
+        "debug": true,
+        "resources" : [
+          "One",
+          "Two",
+          "Three",
+          "Four",
+          "Five"
+	],
+        "url" : "http://my.sonarqube.local:9000"
+      }
+  }
+}
