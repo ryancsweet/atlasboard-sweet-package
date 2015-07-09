@@ -12,7 +12,7 @@ git submodule add https://github.com/ryancsweet/atlasboard-sweet-package.git pac
 
 to import the package as a **git submodule** and use any of the widgets and jobs in this package.
 
-See also: [Package-Atlassian](https://bitbucket.org/atlassian/atlasboard/wiki/Package-Atlassian), [Package-red6](https://github.com/red6/atlasboard-red6-package]
+See also: [Package-Atlassian](https://bitbucket.org/atlassian/atlasboard/wiki/Package-Atlassian), [Package-red6](https://github.com/red6/atlasboard-red6-package)
 
 ## Available Widgets
 
@@ -28,7 +28,13 @@ as the color.
 "sonarqube-treemap": {
   "credentials": "sonar key in globalAuth.config",
   "interval": 60000,
-  "resources": ["Project One", "Project Two", "Project Three"],
+  "resources": [
+    "Project One", 
+    "Project Two", 
+    "Project Three", 
+    "Project Four", 
+    "Project Five"
+  ],
   "url": "http://your-sonarqube-server:9000"
 }
 ```
