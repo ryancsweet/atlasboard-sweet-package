@@ -1,7 +1,7 @@
-var treemap = require("../sonarqube-treemap")
+var treemap = require("../sonarqube-treemap");
 
 describe("when the sonar-treemap job can contact the sonar host", function () {
-	var config, dependencies, job_callback;
+	var config, dependencies;
 
 	beforeEach(function() {
 		config = {
@@ -21,7 +21,7 @@ describe("when the sonar-treemap job can contact the sonar host", function () {
 					);
 				}
 			}
-		}
+		};
 	});
 
 	it("only declared resources should be returned", function () {
@@ -31,10 +31,83 @@ describe("when the sonar-treemap job can contact the sonar host", function () {
 				{ "name":"Two", "coverage":35.1, "value":10105 },
 				{ "name":"Three", "coverage":12.5, "value":27592 },
 				{ "name":"Four", "coverage":60.2, "value":2922 },
-		   	]});
+			]});
 
 			expect(data.children).not.toEqual(
 				jasmine.objectContaining({"name":"Five"}));
 		});
 	});
 });
+
+describe("when the sonar-treemap job has been configured with credentials", function() {
+	var config, dependencies, options;
+
+	beforeEach(function() {
+		config = {
+			credentials: "sonarqube",
+			globalAuth: {
+				"sonarqube": {
+					username: "username",
+					password: "password"
+				}
+			}
+		};
+
+		dependencies = {
+			easyRequest: {
+				JSON: function(opts) {
+					options = opts;
+				}
+			}
+		};
+	});
+
+	it("must include a basic authorization header with hash", function() {
+		treemap(config, dependencies);
+
+		expect(options.headers).toEqual(
+			jasmine.objectContaining({ 
+				"Authorization": 
+				"Basic dXNlcm5hbWU6cGFzc3dvcmQ="
+			}));
+	});
+});
+
+describe("when easyRequest returns an error", function() {
+	var config, dependencies, job_callback, errorMessage;
+	var expectedError = "ERROR: Unable to access Sonarqube metrics at " +
+		"http://sonarqube:9000/api/resources?metrics=ncloc,coverage, " +
+		"reason: server unavailable";
+
+	beforeEach(function() {
+		config = {
+			url: "http://sonarqube:9000"
+		};
+
+		dependencies = {
+			easyRequest: {
+				JSON: function(options, callback) {
+					callback("server unavailable");
+				}
+			},
+			logger: {
+				error: function(msg) {
+					errorMessage = msg;
+				}
+			}
+		};
+
+		job_callback = jasmine.createSpy("error");
+	});
+
+	it("the callback must return an error", function() {
+		treemap(config, dependencies, job_callback);
+		expect(job_callback).toHaveBeenCalledWith(expectedError);
+	});
+
+	it("must log the error", function() {
+		treemap(config, dependencies, job_callback);
+		expect(errorMessage).toEqual(expectedError);
+	});
+});
+

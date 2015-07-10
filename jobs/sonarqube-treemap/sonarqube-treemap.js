@@ -51,7 +51,7 @@ module.exports = function(config, dependencies, job_callback) {
 			logger.error(msg);
 			return job_callback(msg);
 		}
-		
+
 		var children = _.reduce(sonarData, function(memo, resource) {
 			if (_.contains(config.resources, resource.name)) {
 				memo.push({
